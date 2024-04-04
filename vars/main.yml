@@ -1,0 +1,6 @@
+---
+vector_template: templates/vector.j2
+vector_config_file: /etc/vector/vector.toml
+vector_service_template: templates/vector.service.j2
+vector_service_config_file: /usr/lib/systemd/system/vector.service
+vector_path: /etc/default/vector
