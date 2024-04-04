@@ -1,12 +1,6 @@
 ---
 version: 0.34.2
 arch: amd64
-vector_template: templates/vector.j2
-vector_config_file: /etc/vector/vector.toml
-vector_service_template: templates/vector.service.j2
-vector_service_config_file: /usr/lib/systemd/system/vector.service
-vector_nightly: no
-vector_version: "{{ vector_nightly | ternary('nightly','latest') }}"
 add_vector_docker_group: no # Add vector user to "docker" group
 add_vector_journal_group: no # Add vector user to "systemd-journal" group
 
