@@ -1,0 +1,56 @@
+- name: Get Vector (Debian)
+  ansible.builtin.get_url:
+    url: "https://packages.timber.io/vector/{{ version }}/vector_{{ version }}-1_{{ arch }}.deb"
+    dest: "./vector-{{ version }}.deb"
+
+- name: Install Vector
+  become: true
+  apt:
+    deb: vector-{{ version }}.deb
+  notify: Start vector service
+  when: ansible_os_family == 'Debian'
+
+- name: Copy config
+  become: true
+  template:
+    src: "{{ vector_template }}"
+    dest: "{{ vector_config_file }}"
+    mode: 0644
+  notify: Start vector service
+
+- name: Use the right config_file
+  become: true
+  lineinfile:
+    path: "{{ vector_path }}"
+    line: "VECTOR_CONFIG={{ vector_config_file }}"
+    state: present
+
+- name: Systemd config
+  become: true
+  template:
+    src: "{{ vector_service_template }}"
+    dest: "{{ vector_service_config_file }}"
+    mode: 0644
+
+- name: Add vector user to docker group
+  user:
+    name: vector
+    groups: docker
+    append: yes
+  when: add_vector_docker_group | default(no)
+  notify: Start vector service
+
+- name: Add vector user to systemd-journal group
+  user:
+    name: vector
+    groups: systemd-journal
+    append: yes
+  when: add_vector_journal_group | default(no)
+  notify: Start vector service
+
+- name: Start Vector
+  become: true
+  service:
+    state: started
+    enabled: yes
+    name: vector
