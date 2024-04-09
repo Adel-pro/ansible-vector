@@ -1,0 +1,30 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Example assertion
+    ansible.builtin.assert:
+      that: true
+
+  - name: Check the vector config
+    stat: 
+      path: "/etc/vector/vector.toml"
+    register: file_vec
+  - name: Check if the config exists
+    ansible.builtin.assert:
+      that:
+        - file_vec.stat.exists == True
+      success_mes: "Config file exists"
+      fail_msg: "Config file doesn't exist"
+
+  - name: Check if the launch is successfull
+    ansible.builtin.assert:
+      that:
+        - "vector in ansible.facts.packages"
+        - "ansible_facts.services['vector'].state == 'running'"
+      fail_msg: "vector is not running"
+      success_msg: "vector is running"
+        
