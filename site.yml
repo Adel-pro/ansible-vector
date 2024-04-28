@@ -1,5 +1,5 @@
 ---
 - name: Install Vector
-  hosts: vector
+  hosts: localhost
   roles: 
     - vector
