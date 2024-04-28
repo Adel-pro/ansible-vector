@@ -1,0 +1,5 @@
+---
+- name: vector
+  src: https://github.com/Adel-pro/vector-role.git
+  scm: git
+  version: v1.0.1
